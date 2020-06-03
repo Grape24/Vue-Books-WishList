@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap');
+body{
+    background-color: #e4e4e4;
+    font-family: 'Roboto', sans-serif;
+}
+.book-container{
+    background-color: white;
+    width: 50%;
+    box-shadow: 3px 4px 11px -2px rgba(0,0,0,0.51);
+    border-radius: 2px;
+    padding: 1.5rem;
+    max-width: 500px;
+}
+
+.book-title{
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+.book-header{
+    flex-direction: row-reverse;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #d2d2d2;
+}
+
+.book-author{
+    padding-top: 0.2rem;
+    color: teal;
+    font-size: 1.3rem;
+}
+
+.book-container div{
+    padding-bottom: 0.5rem;
+}
+.wishlist-container{
+    width: 40%;
+}
+.book-btn{
+    align-self:flex-end;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    color: white;
+    border: none;
+    background-color: #836339;
+}
+
+.sorter-btn{
+    background-color: white;
+    height: 3rem;
+    width: 33%;
+    color: teal;
+    border: 1px solid #aeaeae;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2rem;
+    font-weight: bolder;
+    cursor: pointer;
+    outline: none;
+}
+
+.wishlist-book{
+    background-color: white;
+    border-left: 20px solid #f2b418;
+    margin: 1rem 0;
+    padding: 1rem
+}
+.wishlist-book div{
+    align-self: center;
+    padding-left: 0.5rem;
+
+}
+.total-price{
+    color: teal;
+    font-size: 2rem;
+}
+
+.selected{
+    background-color: teal;
+    color: white;
+    outline: none;
+}
+
+.container{
+    padding-top: 4rem;
+    max-width: 980px;
+    margin: 0 auto;
+}
+
+.pagination-btn{
+    color: gray;
+    font-size: 3rem;
+    cursor: pointer;
+    margin: 1rem;
+}
+.flex{
+    display: flex;
+}
+.align-center{
+    align-items: center;
+}
+.space-between{
+    justify-content: space-between;
+}
+.column{
+    flex-direction: column;
+}
