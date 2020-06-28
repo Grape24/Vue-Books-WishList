@@ -1,39 +1,32 @@
 import axios from 'axios'
-var uniqId = require('lodash.uniqueid');
+let uniqId = require('lodash.uniqueid');
 
 async function getBooks() {
-  let books = JSON.parse(localStorage.getItem('books'));
+  const books = loadBooks();
   if (!books) {
-    let books = await axios('http://s3.amazonaws.com/sundaysky-mock/books/listOfBooks.json', {}, { crossdomain: true })
-    console.log(books);
-    books = books.data.books.map(book => {
-      book.isWishList = false;
-      book.id = uniqId();
-      return book
-    })
+    books = await fetchBooks();
     localStorage.setItem('books', JSON.stringify(books))
   }
   return books
 }
 
-function updateBook(idx, book) {
-  let books = JSON.parse(localStorage.getItem('books'));
-  books[idx] = book;
-  localStorage.setItem('books', JSON.stringify(books))
+function updateBook(id, book) {
+  const books = loadBooks();
+  const bookIdx = findIndexById(id);
+  books.splice(bookIdx, 1, book);
+  localStorage.setItem('books', JSON.stringify(books));
 }
 
-function getBooksForWishList() {
-  let books = JSON.parse(localStorage.getItem('books'));
-  let booksForWishlist = books.reduce((acc, book) => {
-    if (book.isWishList) acc.push(book)
-    return acc
-  }, [])
-  return booksForWishlist
+function removeBookFromWL(id) {
+  const books = loadBooks();
+  const bookIdx = findIndexById(id);
+  books[bookIdx].isWishList = false;
+  localStorage.setItem('books', JSON.stringify(books));
 }
 
 function findIndexById(id) {
-  let books = JSON.parse(localStorage.getItem('books'));
-  let bookIdx = books.findIndex(book => book.id === id)
+  const books = loadBooks();
+  const bookIdx = books.findIndex(book => book.id === id);
   return bookIdx;
 }
 
@@ -50,16 +43,43 @@ function sortWishList(sortBy, booksToSort) {
       }
       return 0;
     },
-    price: (a,b) =>  a.price - b.price,
-    rating: (a,b) => a.rating - b.rating,
+    price: (a, b) => a.price - b.price,
+    rating: (a, b) => a.rating - b.rating,
   }
-  return booksToSort.sort(sortingFunctions[sortBy])
+  return Promise.resolve(booksToSort.sort(sortingFunctions[sortBy]))
 }
+
+function loadBooks() {
+  let books;
+  try {
+    books = JSON.parse(localStorage.getItem('books'));
+  }
+  catch {
+    console.log(err);
+  }
+  return books;
+}
+
+async function fetchBooks() {
+  try {
+    const books = await axios('http://s3.amazonaws.com/sundaysky-mock/books/listOfBooks.json')
+    console.log(books);//fetch books, should be different function
+    books = books.data.books.map(book => {
+      book.isWishList = false;
+      book.id = uniqId();
+      return book
+    })
+    return books;
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 
 export default {
   getBooks,
   updateBook,
-  getBooksForWishList,
   findIndexById,
-  sortWishList
+  sortWishList,
+  removeBookFromWL
 }

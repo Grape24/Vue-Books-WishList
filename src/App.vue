@@ -1,5 +1,6 @@
 <template>
 <div class="flex container">
+  
   <bookPreview 
   :book="currBook"
   :currBookIdx="currBookIdx"
@@ -26,41 +27,39 @@ import totalPrice from './components/totalPrice.vue'
 
 
 export default {
-  data(){
-    return {
-      currBookIdx: 0,
-      books: [],
-      currBook: null,
-      booksForWishList: bookService.getBooksForWishList()
-    }
-  },
   methods:{
     setIdx(val){
-      this.currBookIdx += val;
-      this.currBook = this.books[this.currBookIdx]
+      this.$store.dispatch('setIdx', val)
     },
     setBook(isAdd){
-      this.currBook.isWishList = isAdd;
-      bookService.updateBook(this.currBookIdx,this.currBook);
-      this.booksForWishList = bookService.getBooksForWishList();
+      this.$store.dispatch('toggleAdd', isAdd)
     },
     removeBook(id, idx){
-      this.booksForWishList.splice(idx, 1);
-      let bookIdx = bookService.findIndexById(id);
-      let book = this.books[bookIdx]
-      book.isWishList = false;
-      bookService.updateBook(bookIdx,book);
-      
+      this.$store.dispatch('removeBookFromWL', id)
     },
     sort(sortBy){
-      this.booksForWishList = bookService.sortWishList(sortBy, this.booksForWishList);
+      this.$store.dispatch('sortWL', sortBy);
   
     }
   },
   async created() {
-    let books = await bookService.getBooks();
-    this.books = books
-    this.currBook = this.books[this.currBookIdx]
+    this.$store.dispatch('loadBooks')
+    
+  },
+  computed:{
+    booksForWishList() {
+      return this.$store.getters.booksForWishList;
+    },
+    books(){
+      return this.$store.getters.books;
+    },
+    currBook(){
+      return this.$store.getters.books[this.$store.getters.currIdx];
+    },
+    currBookIdx(){
+      return this.$store.getters.currIdx;
+    }
+
   },
   components:{
     bookPreview,
